@@ -32,6 +32,8 @@ migrate_working_dir/
 .pub/
 /build/
 /coverage/
+.github/
+.cursor/
 
 # Symbolication related
 app.*.symbols

@@ -80,39 +80,45 @@ class _WelcomeActionCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Ensure the card sizes itself to its intrinsic content width and
+    // does not expand to fill available horizontal space (useful inside Wrap/Row).
     return InkWell(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: appSecondary.withOpacity(0.15), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: appPrimary.withOpacity(0.04),
-              blurRadius: 12,
-              offset: const Offset(0, 4),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            icon.isNotEmpty
-                ? Image.asset(icon, width: 22, height: 22)
-                : SizedBox(),
-            icon.isNotEmpty ? const SizedBox(width: 8) : SizedBox(),
-            Text(
-              title,
-              style: TextStyle(
-                color: appPrimary,
-                fontSize: 14,
-                fontWeight: FontWeight.w400,
+      borderRadius: BorderRadius.circular(16),
+      child: IntrinsicWidth(
+        stepWidth: 1.0,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: appSecondary.withOpacity(0.15), width: 1),
+            boxShadow: [
+              BoxShadow(
+                color: appPrimary.withOpacity(0.04),
+                blurRadius: 12,
+                offset: const Offset(0, 4),
               ),
-              textAlign: TextAlign.center,
-            ),
-          ],
+            ],
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              icon.isNotEmpty
+                  ? Image.asset(icon, width: 22, height: 22)
+                  : const SizedBox.shrink(),
+              icon.isNotEmpty ? const SizedBox(width: 8) : const SizedBox.shrink(),
+              Text(
+                title,
+                style: TextStyle(
+                  color: appPrimary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w400,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );
