@@ -1,0 +1,84 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Разрешаем чтение коллекции courses всем пользователям
+    match /courses/{courseId} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    
+    // Правила для маркетплейса
+    match /educational_materials/{materialId} {
+      // Все могут читать опубликованные материалы
+      allow read: if true; // Для разработки разрешаем всем
+      // allow read: if resource.data.isPublished == true; // Раскомментируйте для продакшена
+      
+      // Создание материалов (для seed данных временно разрешаем всем)
+      allow create: if true; // Для разработки
+      // allow create: if request.auth != null; // Раскомментируйте для продакшена
+      
+      // Только автор может редактировать
+      allow update: if request.auth != null && 
+                      request.auth.uid == resource.data.authorId;
+      
+      // Только автор может удалять
+      allow delete: if request.auth != null && 
+                      request.auth.uid == resource.data.authorId;
+      
+      // Subcollection для отзывов
+      match /reviews/{reviewId} {
+        allow read: if true;
+        allow create: if request.auth != null;
+        allow update: if request.auth != null && 
+                        request.auth.uid == resource.data.userId;
+        allow delete: if request.auth != null && 
+                        request.auth.uid == resource.data.userId;
+      }
+    }
+    
+    // Покупки
+    match /purchases/{purchaseId} {
+      allow read: if request.auth != null && 
+                    request.auth.uid == resource.data.userId;
+      allow create: if request.auth != null;
+    }
+    
+    // Жалобы
+    match /reports/{reportId} {
+      allow create: if request.auth != null;
+      allow read: if request.auth != null;
+    }
+    
+    // Правила для AI чатов
+    match /users/{userId}/chats/{chatId} {
+      // Пользователи могут читать только свои чаты
+      allow read: if request.auth != null && request.auth.uid == userId;
+      
+      // Пользователи могут создавать свои чаты
+      allow create: if request.auth != null && request.auth.uid == userId;
+      
+      // Пользователи могут обновлять свои чаты, но не статус модерации
+      allow update: if request.auth != null && 
+                      request.auth.uid == userId &&
+                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['moderationStatus', 'moderatedBy', 'moderatedAt']));
+      
+      // Пользователи могут удалять свои чаты
+      allow delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Правила для модерации (только для модераторов)
+    // Добавьте custom claims для модераторов в Firebase Auth
+    match /users/{userId}/chats/{chatId} {
+      // Модераторы могут обновлять статус модерации
+      allow update: if request.auth != null &&
+                      request.auth.token.moderator == true &&
+                      request.resource.data.diff(resource.data).affectedKeys().hasOnly(['moderationStatus', 'moderationComment', 'moderatedBy', 'moderatedAt', 'updatedAt']);
+    }
+    
+    // Правила для остальных коллекций
+    match /{document=**} {
+      allow read, write: if request.auth != null;
+    }
+  }
+}
