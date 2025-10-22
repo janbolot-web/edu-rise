@@ -1,6 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:edurise/features/tests/data/repositories/test_repository.dart';
+import 'package:edurise/features/tests/domain/models/test.dart' as domain;
 
-// Простая модель теста
+// Простая модель теста для домашней страницы
 class RecentTest {
   final String id;
   final String title;
@@ -13,28 +15,20 @@ class RecentTest {
     required this.date,
     required this.questions,
   });
+
+  factory RecentTest.fromDomain(domain.Test t) {
+    return RecentTest(
+      id: t.id,
+      title: t.title,
+      date: t.createdAt,
+      questions: t.questionCount,
+    );
+  }
 }
 
-// Провайдер с мок-данными — возвращает небольшой список последних тестов
-final recentTestsProvider = Provider<List<RecentTest>>((ref) {
-  return [
-    RecentTest(
-      id: 't1',
-      title: 'Математика — базовый уровень',
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      questions: 15,
-    ),
-    RecentTest(
-      id: 't2',
-      title: 'Английский — грамматика',
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      questions: 20,
-    ),
-    RecentTest(
-      id: 't3',
-      title: 'Логическое мышление',
-      date: DateTime.now().subtract(const Duration(days: 5)),
-      questions: 10,
-    ),
-  ];
+// Провайдер, который загружает последние тесты из Firestore
+final recentTestsProvider = FutureProvider<List<RecentTest>>((ref) async {
+  final repo = TestRepository();
+  final tests = await repo.getTests();
+  return tests.map((t) => RecentTest.fromDomain(t)).toList();
 });

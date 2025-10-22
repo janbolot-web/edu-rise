@@ -311,30 +311,43 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 12),
               Consumer(
                 builder: (context, ref, _) {
-                  final tests = ref.watch(recentTestsProvider);
-                  if (tests.isEmpty) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Text(
-                        'Нет недавних тестов',
-                        style: GoogleFonts.montserrat(
-                            color: const Color(0xFF9AA4B2)),
-                      ),
-                    );
-                  }
+                  final testsAsync = ref.watch(recentTestsProvider);
 
-                  // show up to 3 recent tests
-                  final shown = tests.length > 3 ? tests.sublist(0, 3) : tests;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
-                    child: Column(
-                      children: [
-                        for (var t in shown) ...[
-                          TestMessageCard(test: t),
-                          const SizedBox(height: 10),
-                        ]
-                      ],
+                  return testsAsync.when(
+                    loading: () => const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: SizedBox(height: 48, child: Center(child: CircularProgressIndicator())),
                     ),
+                    error: (e, st) => Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Text('Ошибка при загрузке тестов', style: GoogleFonts.montserrat(color: const Color(0xFF9AA4B2))),
+                    ),
+                    data: (tests) {
+                      if (tests.isEmpty) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            'Нет недавних тестов',
+                            style: GoogleFonts.montserrat(
+                                color: const Color(0xFF9AA4B2)),
+                          ),
+                        );
+                      }
+
+                      // show up to 3 recent tests
+                      final shown = tests.length > 3 ? tests.sublist(0, 3) : tests;
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Column(
+                          children: [
+                            for (var t in shown) ...[
+                              TestMessageCard(test: t),
+                              const SizedBox(height: 10),
+                            ]
+                          ],
+                        ),
+                      );
+                    },
                   );
                 },
               ),

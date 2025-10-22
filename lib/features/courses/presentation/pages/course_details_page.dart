@@ -9,6 +9,8 @@ import 'package:edurise/features/courses/presentation/providers/purchased_course
 import 'package:edurise/features/courses/presentation/pages/purchased_course_details_page.dart';
 import 'package:edurise/features/courses/presentation/widgets/purchase_course_dialog.dart';
 import 'package:edurise/features/courses/presentation/pages/video_lesson_page.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter/services.dart';
 
 class CourseDetailsPage extends ConsumerWidget {
   final Course course;
@@ -48,8 +50,11 @@ class _UnpurchasedCourseDetailsPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Существующая реализация для неоплаченного курса
-    return Scaffold(
+  // Существующая реализация для неоплаченного курса
+  final courseMap = course.toJson();
+  final isEmbed = (courseMap['type'] ?? '') == 'embed';
+
+  return Scaffold(
       backgroundColor: appBackground,
       body: CustomScrollView(
         slivers: [
@@ -250,7 +255,74 @@ class _UnpurchasedCourseDetailsPage extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  if (course.modules.isEmpty)
+                  // If course is an embed type, show embed card instead of modules
+                  if (isEmbed) ...[
+                    const SizedBox(height: 12),
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Встроенный мини-курс (embed)',
+                            style: GoogleFonts.montserrat(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: appPrimary,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'Этот курс встроен как внешний мини-курс. Нажмите, чтобы открыть его.',
+                            style: GoogleFonts.montserrat(
+                              fontSize: 14,
+                              color: appSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              ElevatedButton(
+                                onPressed: () async {
+                                  final url = Uri.tryParse(courseMap['embedUrl'] ?? '');
+                                  if (url == null) return;
+                                  if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Не удалось открыть ссылку')),
+                                    );
+                                  }
+                                },
+                                child: const Text('Открыть курс'),
+                              ),
+                              const SizedBox(width: 12),
+                              OutlinedButton(
+                                onPressed: () {
+                                  // копирование ссылки
+                                  final url = courseMap['embedUrl'] ?? '';
+                                  Clipboard.setData(ClipboardData(text: url));
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Ссылка скопирована')),
+                                  );
+                                },
+                                child: const Text('Копировать ссылку'),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ] else if (course.modules.isEmpty)
                     Text(
                       'Программа курса будет доступна после начала обучения',
                       style: GoogleFonts.montserrat(

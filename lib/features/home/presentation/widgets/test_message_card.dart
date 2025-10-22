@@ -11,6 +11,16 @@ class TestMessageCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
+      child: InkWell(
+        onTap: () {
+          Navigator.pushNamed(
+            context,
+            '/test-taking',
+            arguments: {'testId': test.id},
+          );
+        },
+        child: Container(
+          width: double.infinity,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -67,6 +77,8 @@ class TestMessageCard extends StatelessWidget {
           const SizedBox(width: 8),
           Icon(Icons.chevron_right, color: appAccentEnd),
         ],
+          ),
+        ),
       ),
     );
   }
