@@ -139,11 +139,17 @@ class RegisterViewModel extends StateNotifier<RegisterState> {
     if (state.isLoading) return null;
     state = state.copyWith(isLoading: true);
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      GoogleSignInAccount? googleUser;
+      try {
+        googleUser = await GoogleSignIn.instance.authenticate(scopeHint: ['email', 'profile']);
+      } catch (e) {
+        googleUser = null;
+      }
       if (googleUser == null) return null; // user cancelled
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      final authz = await googleUser.authorizationClient.authorizationForScopes(['email', 'profile']);
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
+        accessToken: authz?.accessToken,
         idToken: googleAuth.idToken,
       );
       final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);

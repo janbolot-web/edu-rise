@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'features/splash/presentation/pages/splash_page.dart';
+import 'features/auth/presentation/pages/auth_page.dart';
 import 'features/profile/presentation/viewmodels/profile_viewmodel.dart';
 import 'widgets/main_shell.dart';
 import 'features/tests/presentation/pages/test_details_page.dart';
@@ -22,7 +23,7 @@ class EduriseApp extends ConsumerWidget {
   Widget home = const SplashPage();
   authAsync.when(
       data: (user) {
-        home = user != null ? const MainShell() : const SplashPage();
+        home = user != null ? const MainShell() : const AuthPage();
       },
       loading: () {
         home = const SplashPage();

@@ -2,9 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-
-	<key>GIDClientID</key>
-	<string>514767525071-2ikage7vhdsv4tst04bmo565asrq4tev.apps.googleusercontent.com</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -52,27 +49,5 @@
 	<string>Приложению нужен доступ к микрофону для голосового ввода в чате AI.</string>
 	<key>NSCameraUsageDescription</key>
 	<string>Камера используется для сканирования бланков ответов (ZipGrade).</string>
-
-	<!-- Google Sign-In required settings -->
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.514767525071-2ikage7vhdsv4tst04bmo565asrq4tev</string>
-			</array>
-		</dict>
-	</array>
-
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>google</string>
-		<string>com.googleusercontent.apps.514767525071-2ikage7vhdsv4tst04bmo565asrq4tev</string>
-		<string>googlechrome</string>
-		<string>googlechrome-x-callback</string>
-	</array>
-
 </dict>
 </plist>
