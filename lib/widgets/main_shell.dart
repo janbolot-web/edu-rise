@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:edurise/core/theme/app_colors.dart';
 import '../features/home/presentation/pages/home_page.dart';
 import '../features/ai_chat/presentation/pages/ai_chat_page.dart';
@@ -152,7 +151,7 @@ class _NavItem extends StatelessWidget {
         children: [
           Icon(icon, color: selected ? appPrimary : appSecondary, size: 26),
           const SizedBox(height: 6),
-          Text(label, style: GoogleFonts.montserrat(color: selected ? appPrimary : appSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
+          Text(label, style: TextStyle(color: selected ? appPrimary : appSecondary, fontSize: 12, fontWeight: FontWeight.w600)),
         ],
       ),
     );
