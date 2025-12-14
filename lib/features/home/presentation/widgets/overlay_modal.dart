@@ -5,7 +5,8 @@ Widget buildOverlayModal(
   int lessonCount = 5,
   int completedLessons = 0,
   int points = 100,
-  VoidCallback? onStartTap,
+  void Function(dynamic lesson)? onStartTap,
+  dynamic lesson,
 }) {
     final currentLessonNum = (completedLessons < lessonCount) ? (completedLessons + 1) : lessonCount;
 
@@ -39,7 +40,7 @@ Widget buildOverlayModal(
             Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: onStartTap,
+                onTap: () => onStartTap?.call(lesson),
                 borderRadius: BorderRadius.circular(8),
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

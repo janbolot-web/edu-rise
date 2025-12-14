@@ -12,7 +12,6 @@ Future<void> main() async {
 
   // Disable runtime fetching of fonts to avoid AssetManifest.json load issues
   // (use bundled fonts or network-free behavior in environments without assets)
-  GoogleFonts.config.allowRuntimeFetching = false;
 
   // Initialize Firebase with generated options for the current platform.
   // Guard with catch to avoid app startup hanging if initialization is blocked.

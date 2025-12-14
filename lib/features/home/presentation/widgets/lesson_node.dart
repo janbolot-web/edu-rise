@@ -131,7 +131,7 @@ class LessonNode extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          SizedBox(
             width: outerSize,
             height: outerSize,
             child: Stack(
@@ -173,7 +173,7 @@ class LessonNode extends StatelessWidget {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
+          SizedBox(
             key: anchorKey,
             width: size,
             height: size,

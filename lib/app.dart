@@ -19,8 +19,8 @@ class EduriseApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authAsync = ref.watch(authStateProvider);
-  Widget home = const SplashPage();
-  authAsync.when(
+    Widget home = const SplashPage();
+    authAsync.when(
       data: (user) {
         home = user == null ? const MainShell() : const AuthPage();
       },
@@ -36,6 +36,7 @@ class EduriseApp extends ConsumerWidget {
       title: 'Edurise - Образовательная платформа',
       theme: ThemeData(
         primarySwatch: Colors.indigo,
+        fontFamily: "Nunito",
         textTheme: Theme.of(context).textTheme,
       ),
       home: home,
@@ -54,9 +55,8 @@ class EduriseApp extends ConsumerWidget {
           case '/test-results':
             // TestResultsPage требует test и attempt, используем placeholder
             return MaterialPageRoute(
-              builder: (context) => const Scaffold(
-                body: Center(child: Text('Результаты теста')),
-              ),
+              builder: (context) =>
+                  const Scaffold(body: Center(child: Text('Результаты теста'))),
             );
           case '/create-test':
             return MaterialPageRoute(
@@ -72,9 +72,7 @@ class EduriseApp extends ConsumerWidget {
               builder: (context) => TestAnalyticsPage(testId: testId),
             );
           case '/badges':
-            return MaterialPageRoute(
-              builder: (context) => const BadgesPage(),
-            );
+            return MaterialPageRoute(builder: (context) => const BadgesPage());
           case '/zipgrade-sheet':
             return MaterialPageRoute(
               builder: (context) => const ZipgradeSheetPage(),
